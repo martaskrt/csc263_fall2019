@@ -3,11 +3,11 @@ from dateutil import tz
 import math
 import argparse
 import pandas as pd
-import csv
+import os
 
 
 def load_data(file):
-    data = pd.read_csv(file)
+    data = pd.read_csv(file, sep=',')
     return data
 
 
@@ -40,21 +40,43 @@ def lateness_function(x, deadline):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--deadline', required=True, type=str,
-                        help="assignment deadline in the format %Y-%m-%d %H:%M:%S, e.g. '2019-09-17 23:59:59'")
-    parser.add_argument('--csv_path', required=True, type=str,
-                        help="path to csv containing assignment grades downloaded from Crowdmark")
-
+    parser.add_argument('--dir_path', required=True, type=str, help="directory that stores Quercus spreadsheet, file lists, and CrowdMark spreadsheets")
     args = parser.parse_args()
 
-    deadline = datetime.strptime(args.deadline, '%Y-%m-%d %H:%M:%S').astimezone(tz=tz.tzlocal())
-    data = load_data(args.csv_path)
-    data['submission_time_local_tz'] = data.apply(lambda row: change_tz(row), axis=1)
-    data['Penalty'] = data.apply(lambda row: lateness_function(row, deadline), axis=1)
-    data['Total After Penalty'] = (data['Total'] - data['Penalty']).clip(lower=0)
+    path_to_file_list = os.path.join(args.dir_path, "assignment_list.csv")
+    file_list = pd.read_csv(path_to_file_list, sep=',')
+    quercus_filename = ""
+    for dirpath, dirname, filenames in os.walk(args.dir_path):
+        for filename in filenames:
+            if "Grades" in filename and "updated" not in filename:
+                quercus_filename = os.path.join(args.dir_path, filename)
+                break
+    # quercus_df = load_data(quercus_filename)
+    quercus_df = pd.read_csv(quercus_filename)
+    quercus_df['SIS User ID'] = quercus_df['SIS User ID'].astype(float)
 
-    out_file = "{}_updated.csv".format(args.csv_path[:-4])
-    data.to_csv(out_file, sep=',')
+    for index, row in file_list.iterrows():
+        deadline = datetime.strptime(row['Deadline'], '%Y-%m-%d %H:%M:%S').astimezone(tz=tz.tzlocal())
+        crowdmark_data = load_data(os.path.join(args.dir_path, row['Crowdmark File']))
+        quercus_column = row['Quercus Assignment']
+        crowdmark_data['submission_time_local_tz'] = crowdmark_data.apply(lambda x: change_tz(x), axis=1)
+        crowdmark_data['Penalty'] = crowdmark_data.apply(lambda x: lateness_function(x, deadline), axis=1)
+        crowdmark_data['Total After Penalty'] = (crowdmark_data['Total'] - crowdmark_data['Penalty']).clip(lower=0)
+
+        crowdmark_data.rename(columns={'Student ID': 'SIS User ID', 'Total After Penalty': quercus_column}, inplace=True)
+
+        updated_crowdmark_marks = crowdmark_data[['SIS User ID', quercus_column]]
+        quercus_df = quercus_df.drop([quercus_column], axis=1)
+
+        updated_crowdmark_marks = updated_crowdmark_marks.dropna(subset=['SIS User ID'])
+        updated_crowdmark_marks['SIS User ID'] = updated_crowdmark_marks['SIS User ID'].astype(float)
+
+
+        quercus_df = quercus_df.merge(updated_crowdmark_marks, on=['SIS User ID'], how='left')
+
+
+    out_file = "{}_updated.csv".format(quercus_filename[:-4])
+    quercus_df.to_csv(out_file, sep=',', index=False)
 
 if __name__ == "__main__":
     main()
