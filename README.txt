@@ -27,7 +27,7 @@ Problem Set 7 (255716)	problem-set-7-8f96d-marks.csv	2019-11-26 22:00:00
 
 	Note that it is tab separated, not comma separated (for compatibility with quercus gradebooks).
 	The first column has the names of the assignments as listed in the Quercus gradebook header (see step 1.)
-	The second column has the names of the corresponding grades files from Crowdmark
+	The second column has the names of the corresponding grades files from Crowdmark (see step 2.)
 	The third column has the assignment's due date formatted as 'YYYY-MM-DD HH:MM:SS' in the local timezone
 		(python datetime and dateutil handle timezones and time changes)
 
@@ -36,6 +36,16 @@ Problem Set 7 (255716)	problem-set-7-8f96d-marks.csv	2019-11-26 22:00:00
 
 6. In calculate_lateness.py, line 52 automatically generates the filename for the quercus gradebook
 	we've had some trouble with it, so we've had to hardcode the filename on line 53
+
+7. In the main directory run:
+	$python3 calculate_lateness.py --dir {subdirectory}
+
+	where {subdirectory is the name of the directory containing the csv files specific to your course.
+
+	The script will generate a new quercus gradebook with the same title albeit '_updated' appended before the file extension.
+	This gradebook will have the columns reordered, with the newly adjusted grades columns at the end.
+
+	The other columns will remain unchanged in the gradebook. Do not upload it to quercus as is.
 
 
 
