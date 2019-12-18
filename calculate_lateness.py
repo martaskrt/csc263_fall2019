@@ -29,13 +29,13 @@ def lateness_function(x, deadline):
     submission_time = x['submission_time_local_tz']
     twelvelater = deadline + timedelta(hours=12)
     if (submission_time - twelvelater).total_seconds() > 0:
-        return 100
+        return 1
     else:
         minutes_diff = (submission_time - deadline).total_seconds() / 60.0
         if minutes_diff <= 0:
             return 0
         else:
-            return 100-math.pow(1-(10/72), minutes_diff)*100
+            return 1-math.pow(1-(10/72), minutes_diff)
 
 
 def main():
@@ -50,6 +50,7 @@ def main():
         for filename in filenames:
             if "Grades" in filename and "updated" not in filename:
                 quercus_filename = os.path.join(args.dir_path, filename)
+                print(quercus_filename)
                 break
     # quercus_df = load_data(quercus_filename)
     quercus_df = pd.read_csv(quercus_filename)
@@ -63,7 +64,8 @@ def main():
         quercus_column = row['Quercus Assignment']
         crowdmark_data['submission_time_local_tz'] = crowdmark_data.apply(lambda x: change_tz(x), axis=1)
         crowdmark_data['Penalty'] = crowdmark_data.apply(lambda x: lateness_function(x, deadline), axis=1)
-        crowdmark_data['Total After Penalty'] = (crowdmark_data['Total'] - crowdmark_data['Penalty']).clip(lower=0)
+        total_possible = float(quercus_df.iloc[1][quercus_column])
+        crowdmark_data['Total After Penalty'] = (crowdmark_data['Total'] - (total_possible*crowdmark_data['Penalty'])).clip(lower=0)
 
         crowdmark_data.rename(columns={'Student ID': 'SIS User ID', 'Total After Penalty': quercus_column}, inplace=True)
 
