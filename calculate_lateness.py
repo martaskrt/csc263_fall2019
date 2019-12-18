@@ -31,11 +31,11 @@ def lateness_function(x, deadline):
     if (submission_time - twelvelater).total_seconds() > 0:
         return 1
     else:
-        minutes_diff = (submission_time - deadline).total_seconds() / 60.0
+        minutes_diff = (submission_time - deadline).total_seconds() // 60.0
         if minutes_diff <= 0:
             return 0
         else:
-            return ((10/72) * minutes_diff)
+            return ((10/72) * minutes_diff)/100
 
 
 def main():
