@@ -7,7 +7,9 @@ import os
 
 
 def load_data(file):
-    data = pd.read_csv(file, sep=',')
+
+    data = pd.read_csv(file, sep='\t')
+    print(data)
     return data
 
 
@@ -44,7 +46,7 @@ def main():
     args = parser.parse_args()
 
     path_to_file_list = os.path.join(args.dir_path, "assignment_list.csv")
-    file_list = pd.read_csv(path_to_file_list, sep=',')
+    file_list = pd.read_csv(path_to_file_list, sep='\t')
     quercus_filename = ""
     for dirpath, dirname, filenames in os.walk(args.dir_path):
         for filename in filenames:
