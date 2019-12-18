@@ -7,9 +7,7 @@ import os
 
 
 def load_data(file):
-
     data = pd.read_csv(file, sep='\t')
-    print(data)
     return data
 
 
@@ -60,6 +58,8 @@ def main():
     for index, row in file_list.iterrows():
         deadline = datetime.strptime(row['Deadline'], '%Y-%m-%d %H:%M:%S').astimezone(tz=tz.tzlocal())
         crowdmark_data = load_data(os.path.join(args.dir_path, row['Crowdmark File']))
+
+
         quercus_column = row['Quercus Assignment']
         crowdmark_data['submission_time_local_tz'] = crowdmark_data.apply(lambda x: change_tz(x), axis=1)
         crowdmark_data['Penalty'] = crowdmark_data.apply(lambda x: lateness_function(x, deadline), axis=1)
