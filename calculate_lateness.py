@@ -49,10 +49,8 @@ def main():
     for dirpath, dirname, filenames in os.walk(args.dir_path):
         for filename in filenames:
             if "Grades" in filename and "updated" not in filename:
-
-                #quercus_filename = os.path.join(args.dir_path, filename)
-
-                quercus_filename = "ps/2019-12-18T1205_Grades-CSC263H1_F.csv"
+                quercus_filename = os.path.join(args.dir_path, filename)
+                #quercus_filename = "ps/2019-12-18T1205_Grades-CSC263H1_F.csv"
 
     # quercus_df = load_data(quercus_filename)
     quercus_df = pd.read_csv(quercus_filename)
