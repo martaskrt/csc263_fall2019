@@ -35,7 +35,7 @@ def lateness_function(x, deadline):
         if minutes_diff <= 0:
             return 0
         else:
-            return 1-math.pow(1-(10/72), minutes_diff)
+            return ((10/72) * minutes_diff)
 
 
 def main():
