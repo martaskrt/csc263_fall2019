@@ -28,7 +28,7 @@ def change_tz(x):
 def lateness_function(x, deadline):
     submission_time = x['submission_time_local_tz']
     twelvelater = deadline + timedelta(hours=12)
-    if type(submission_time) != float:
+    if type(submission_time) != pd._libs.tslibs.timestamps.Timestamp:
         return 0
     if (submission_time - twelvelater).total_seconds() > 0:
         return 1
