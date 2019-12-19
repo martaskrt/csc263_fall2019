@@ -71,8 +71,8 @@ def main():
         crowdmark_data['Penalty'] = crowdmark_data.apply(lambda x: lateness_function(x, deadline), axis=1)
 
         total_possible = float(quercus_df.iloc[1][quercus_column])
-        crowdmark_data['Total After Penalty'] = (crowdmark_data['Total'] - (total_possible*crowdmark_data['Penalty'])).clip(lower=0)
-
+        crowdmark_data['Total After Penalty'] = (crowdmark_data['Total'] -
+                                                 (total_possible*crowdmark_data['Penalty'])).clip(lower=0)
         crowdmark_data.rename(columns={'Student ID': 'SIS User ID', 'Total After Penalty': quercus_column}, inplace=True)
 
         updated_crowdmark_marks = crowdmark_data[['SIS User ID', quercus_column]]
