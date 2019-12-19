@@ -7,7 +7,7 @@ import os
 
 
 def load_data(file):
-    data = pd.read_csv(file, sep='\t')
+    data = pd.read_csv(file, sep=',')
     return data
 
 
@@ -28,6 +28,8 @@ def change_tz(x):
 def lateness_function(x, deadline):
     submission_time = x['submission_time_local_tz']
     twelvelater = deadline + timedelta(hours=12)
+    if type(submission_time) != float:
+        return 0
     if (submission_time - twelvelater).total_seconds() > 0:
         return 1
     else:
@@ -35,7 +37,10 @@ def lateness_function(x, deadline):
         if minutes_diff <= 0:
             return 0
         else:
-            return ((10/72) * minutes_diff)/100
+
+            return ((10/72)*math.ceil(minutes_diff))/100
+
+
 
 
 def main():
@@ -44,7 +49,7 @@ def main():
     args = parser.parse_args()
 
     path_to_file_list = os.path.join(args.dir_path, "assignment_list.csv")
-    file_list = pd.read_csv(path_to_file_list, sep='\t')
+    file_list = pd.read_csv(path_to_file_list, sep=',')
     quercus_filename = ""
     for dirpath, dirname, filenames in os.walk(args.dir_path):
         for filename in filenames:
@@ -64,6 +69,7 @@ def main():
         quercus_column = row['Quercus Assignment']
         crowdmark_data['submission_time_local_tz'] = crowdmark_data.apply(lambda x: change_tz(x), axis=1)
         crowdmark_data['Penalty'] = crowdmark_data.apply(lambda x: lateness_function(x, deadline), axis=1)
+
         total_possible = float(quercus_df.iloc[1][quercus_column])
         crowdmark_data['Total After Penalty'] = (crowdmark_data['Total'] - (total_possible*crowdmark_data['Penalty'])).clip(lower=0)
 
