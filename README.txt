@@ -17,13 +17,13 @@ To run:
 
 4. In the subdirectory, make a file called 'assignment_list.csv' with the following format:
 
-Quercus Assignment	Crowdmark File	Deadline
-Problem Set 1 (230306)	problem-set-1-e3941-marks.csv	2019-09-17 22:00:00
-Problem Set 2 (232908)	problem-set-2-4f1b9-marks.csv	2019-09-24 22:00:00
-Problem Set 3 (238527)	problem-set-3-16f75-marks.csv	2019-10-08 22:00:00
-Problem Set 4 (239487)	problem-set-4-ed7e5-marks.csv	2019-10-15 22:00:00
-Problem Set 5 (255715)	problem-set-5-3c8c5-marks.csv	2019-11-12 22:00:00
-Problem Set 7 (255716)	problem-set-7-8f96d-marks.csv	2019-11-26 22:00:00
+Quercus Assignment,Crowdmark File,Deadline
+Problem Set 1 (230306),problem-set-1-e3941-marks.csv,2019-09-17 22:00:00
+Problem Set 2 (232908),problem-set-2-4f1b9-marks.csv,2019-09-24 22:00:00
+Problem Set 3 (238527),problem-set-3-16f75-marks.csv,2019-10-08 22:00:00
+Problem Set 4 (239487),problem-set-4-ed7e5-marks.csv,2019-10-15 22:00:00
+Problem Set 5 (255715),problem-set-5-3c8c5-marks.csv,2019-11-12 22:00:00
+Problem Set 7 (255716),problem-set-7-8f96d-marks.csv,2019-11-26 22:00:00
 
 	Note that it is tab separated, not comma separated (for compatibility with quercus gradebooks).
 	The first column has the names of the assignments as listed in the Quercus gradebook header (see step 1.)
